@@ -1,0 +1,16 @@
+FROM openbox-android
+
+ARG ANDROID_API_LEVEL=25
+ENV ANDROID_API_LEVEL ${ANDROID_API_LEVEL}
+
+ADD ./etc/supervisord-appium.conf /etc/supervisord-appium.conf
+ADD ./etc/launch_appium.sh /etc/launch_appium.sh
+
+ADD ./etc/supervisord-screen.conf /etc/supervisord-screen.conf
+
+ADD ./etc/run.sh /etc/run.sh
+RUN chmod +x /etc/run.sh
+
+WORKDIR /root
+
+CMD ["/etc/run.sh"]

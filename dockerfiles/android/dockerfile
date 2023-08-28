@@ -1,0 +1,26 @@
+FROM openbox-android
+
+ARG ANDROID_API_LEVEL=25
+ENV ANDROID_API_LEVEL ${ANDROID_API_LEVEL}
+
+# # NOTE: build-tools for apksigner.apk
+# https://apilevels.com/
+# # # create AVD
+ARG ANDROID_API_LEVEL=25
+RUN yes | sdkmanager --verbose --sdk_root=$ANDROID_HOME --licenses
+RUN yes | sdkmanager --verbose --sdk_root=$ANDROID_HOME "build-tools;${ANDROID_API_LEVEL}.0.0"
+RUN yes | sdkmanager --verbose --sdk_root=$ANDROID_HOME "system-images;android-${ANDROID_API_LEVEL};default;x86"
+RUN yes | sdkmanager --verbose --sdk_root=$ANDROID_HOME "platforms;android-${ANDROID_API_LEVEL}"
+
+# NOTE: create device
+RUN echo no | avdmanager -v create avd -f \
+  -n test_nexus \
+  -k "system-images;android-${ANDROID_API_LEVEL};default;x86" 
+
+# # apksigner.jar
+ENV PATH $PATH:$ANDROID_HOME/build-tools/${ANDROID_API_LEVEL}.0.0/lib
+
+ADD ./etc/supervisord-emulator.conf /etc/supervisord-emulator.conf
+ADD ./etc/launch_emulator.sh /etc/launch_emulator.sh
+
+# emulator setup ends here
