@@ -1,4 +1,4 @@
-FROM openbox-android
+FROM docker-emulator
 
 EXPOSE 5900 
 

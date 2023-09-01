@@ -2,30 +2,30 @@
 
 set -x
 
-ANDROID_API_LEVEL=26
-SCREEN_RESOLUTION=1920x1080
+ANDROID_API_LEVEL=28
+SCREEN_RESOLUTION=1366x768
 
-docker rmi openbox-android
+docker rmi docker-emulator
 
 set -ex
 
 # build openbox as base
 cd dockerfiles/ubuntu
-  docker build . -t openbox-android
+  docker build . -t docker-emulator
 cd -
 
   # build openbox as base
   cd dockerfiles/openbox
-    docker build . -t openbox-android
+    docker build . -t docker-emulator
   cd -
 
   # build appium
   cd dockerfiles/appium
-    docker build . -t openbox-android
+    docker build . -t docker-emulator
   cd -
 
   cd dockerfiles/noVNC
-    docker build . -t openbox-android
+    docker build . -t docker-emulator
   cd -
 
   # build android emulator
@@ -33,34 +33,30 @@ cd -
     docker build -f dockerfile.base . \
       --build-arg="ANDROID_API_LEVEL=$ANDROID_API_LEVEL" \
       --build-arg="SCREEN_RESOLUTION=$SCREEN_RESOLUTION" \
-      -t openbox-android
+      -t docker-emulator
   cd -
 
 # finialize docker
 cd dockerfiles/final
   docker build . \
     --build-arg="ANDROID_API_LEVEL=$ANDROID_API_LEVEL" \
-    -t openbox-android
+    -t docker-emulator
 cd -
 
 cd dockerfiles/android
   docker build . \
     --build-arg="ANDROID_API_LEVEL=$ANDROID_API_LEVEL" \
     --build-arg="SCREEN_RESOLUTION=$SCREEN_RESOLUTION" \
-    -t openbox-android
+    -t docker-emulator
 cd -
 
-# docker image tag openbox-android 192.168.10.61:5000/logickee/openbox-android
+# docker image tag docker-emulator 192.168.10.61:5000/logickee/docker-emulator
 
-# docker push 192.168.10.61:5000/logickee/openbox-android 
+# docker push 192.168.10.61:5000/logickee/docker-emulator 
 
-# docker run --rm -it \
-#   --privileged \
-#   --device /dev/kvm \
-#   -v ./share:/share \
-#   -v ./dockerfiles/final/etc/supervisord-emulator.conf:/etc/supervisord-emulator.conf \
-#   -p 15900:5900 \
-#   -p 6080:6080 \
-#   -p 4723:4723 \
-#   --name logickee_docker_android openbox-android 
-#   # bash
+# docker run -d -p 5000:5000 --restart=always --name registry -v $(pwd)/docker-registry:/var/lib/registry registry:latest
+# docker image tag docker/getting-started localhost:5000/getting-started:0.1
+# docker push localhost:5000/getting-started:0.1
+
+# docker run --rm -itd --privileged --device /dev/kvm -v ./share:/share -p 6080:6080  --name emulator docker-emulator
+

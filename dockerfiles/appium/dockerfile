@@ -1,4 +1,4 @@
-FROM openbox-android
+FROM docker-emulator
 
 RUN curl -sL https://deb.nodesource.com/setup_18.x -o /tmp/nodesource_setup.sh
 RUN chmod +x /tmp/nodesource_setup.sh

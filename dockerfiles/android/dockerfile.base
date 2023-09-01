@@ -1,4 +1,4 @@
-FROM openbox-android
+FROM docker-emulator
 
 ARG ANDROID_API_LEVEL=25
 ENV ANDROID_API_LEVEL ${ANDROID_API_LEVEL}
@@ -8,7 +8,7 @@ ENV ANDROID_API_LEVEL ${ANDROID_API_LEVEL}
 # pre-request
   # openjdk-17-jdk \
 
-RUN apt install -y git curl wget zip unzip \
+RUN apt install -y git curl wget zip unzip nano net-tools \
   openjdk-11-jdk \
   qemu-system-x86 --fix-missing
 
@@ -16,9 +16,8 @@ RUN apt install -y git curl wget zip unzip \
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
 RUN mkdir -p /root/Android
-# RUN wget -O tools.zip https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip
 RUN cd /root/Android && \
-  wget -O tools.zip http://172.25.15.178:8888/commandlinetools-linux-8512546_latest.zip && \
+  wget -O tools.zip https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip && \
   unzip tools.zip && \
   rm tools.zip
 

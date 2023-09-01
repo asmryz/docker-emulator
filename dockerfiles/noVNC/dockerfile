@@ -1,4 +1,4 @@
-FROM openbox-android
+FROM docker-emulator
 
 ENV NOVNC_VERSION="1.4.0" \
     WEBSOCKIFY_VERSION="0.11.0" \
