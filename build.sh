@@ -5,7 +5,7 @@ set -x
 ANDROID_API_LEVEL=28
 SCREEN_RESOLUTION=1366x768
 
-# docker rmi docker-emulator
+docker rmi docker-emulator
 
 set -ex
 
@@ -59,4 +59,5 @@ cd -
 # docker push localhost:5000/getting-started:0.1
 
 # docker run --rm -itd --privileged --device /dev/kvm -v ./share:/share  -v ./app:/usr/src/app  -p 6080:6080  --name emulator docker-emulator
+
 
