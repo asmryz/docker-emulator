@@ -19,7 +19,7 @@ RUN apt install -y nodejs yarn gcc g++ make
 # NOTE: handled in android build step
 # ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
-RUN npm i --location=global appium appium-doctor
+RUN npm i -g appium appium-doctor
 
 # - automationName: UiAutomator2
 # - platformNames: ["Android"]
