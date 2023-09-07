@@ -4,33 +4,9 @@ services:
         container_name: emulator
         ports:
             - 6080:6080
-        working_dir: /usr/src/app            
+        working_dir: /usr/src/app
         volumes:
-            - ./share:/share
-            - ./init:/docker-entrypoint-initdb.d
-            - ./app:/usr/src/app                        
+            - ./app:/usr/src/app
         devices:
             - /dev/kvm
-        # command:
-        #     - /bin/bash
-        #     - -c
-        #     - |
-        #         npm install 
-        #         npx react-native run-android
         privileged: true
-    
-    # api_25:
-    #   # image: 192.168.10.61:5000/logickee/openbox-android
-    #   build: 
-    #     context: dockerfiles/android
-    #     args:
-    #       ANDROID_API_LEVEL: 25
-    #       SCREEN_RESOLUTION: 1920x1080
-
-    #   ports:
-    #     - 5900:5900
-    #     - 6080:6080
-    #     - 4723:4723
-    #   volumes:
-    #     - /dev/kvm:/dev/kvm
-    #   privileged: true
