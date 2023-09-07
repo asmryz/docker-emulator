@@ -24,3 +24,7 @@ ADD ./etc/supervisord-emulator.conf /etc/supervisord-emulator.conf
 ADD ./etc/launch_emulator.sh /etc/launch_emulator.sh
 
 # emulator setup ends here
+
+
+
+# sed -i 's/hw.keyboard = no/hw.keyboard = yes/g' config.ini
