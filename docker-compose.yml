@@ -9,4 +9,6 @@ services:
             - ./app:/usr/src/app
         devices:
             - /dev/kvm
+        environment:
+            - VNC_PASSWORD=no
         privileged: true
