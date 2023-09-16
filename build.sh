@@ -28,6 +28,10 @@ cd -
     docker build . -t docker-emulator
   cd -
 
+  cd dockerfiles/flutter
+    docker build . -t docker-emulator
+  cd -
+
   # build android emulator
   cd dockerfiles/android
     docker build -f dockerfile.base . \
