@@ -23,7 +23,8 @@ RUN npm i -g appium appium-doctor
 
 # - automationName: UiAutomator2
 # - platformNames: ["Android"]
-RUN appium driver install uiautomator2
+RUN appium driver uninstall uiautomator2 || true
+RUN appium driver install uiautomator2@4.2.9
 
 # TODO: resume me
 # # ? ffmpeg cannot be found

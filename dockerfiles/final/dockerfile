@@ -3,10 +3,21 @@ FROM docker-emulator
 ARG ANDROID_API_LEVEL=25
 ENV ANDROID_API_LEVEL ${ANDROID_API_LEVEL}
 
-ADD ./etc/supervisord-appium.conf /etc/supervisord-appium.conf
+ADD ./etc/supervisord.conf /etc/supervisord.conf
 ADD ./etc/launch_appium.sh /etc/launch_appium.sh
+ADD ./etc/menu.xml /etc/xdg/openbox/menu.xml
 
-ADD ./etc/supervisord-screen.conf /etc/supervisord-screen.conf
+# Install dependencies for adding repository
+RUN apt update && apt install -y gnupg wget ca-certificates
+
+# Add Mozilla APT repo and configure pinning to avoid snap installations
+RUN install -d -m 0755 /etc/apt/keyrings && \
+  wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | tee /etc/apt/keyrings/packages.mozilla.org.asc > /dev/null && \
+  echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | tee /etc/apt/sources.list.d/mozilla.list > /dev/null && \
+  echo 'Package: firefox*\nPin: origin packages.mozilla.org\nPin-Priority: 1000' | tee /etc/apt/preferences.d/mozilla
+
+# Install Firefox
+RUN apt update && apt install -y firefox
 
 ADD ./etc/run.sh /etc/run.sh
 RUN chmod +x /etc/run.sh
