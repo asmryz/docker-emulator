@@ -1,0 +1,6 @@
+{
+    "emulators.androidHOME": "/root/Android",
+    "emulators.avdHome": "/root/.android",
+    "emulators.platformTools": "/root/Android/platform-tools",
+    "java.configuration.updateBuildConfiguration": "automatic"
+}

@@ -1,10 +1,10 @@
-FROM docker-emulator
+FROM docker-emulator:ubuntu
 
 EXPOSE 5900 
 
-ENV HOME /root
-ENV TZ Etc/UTC
-ENV SHELL /bin/bash
+ENV HOME=/root
+ENV TZ=Etc/UTC
+ENV SHELL=/bin/bash
 ENV PS1='# '
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PASSWORD="root"

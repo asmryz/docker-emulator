@@ -1,26 +1,54 @@
-FROM docker-emulator
+FROM docker-emulator:final
 
 ARG ANDROID_API_LEVEL=25
-ENV ANDROID_API_LEVEL ${ANDROID_API_LEVEL}
+ENV ANDROID_API_LEVEL=${ANDROID_API_LEVEL}
 
 # # NOTE: build-tools for apksigner.apk
 # https://apilevels.com/
 # # # create AVD
 ARG ANDROID_API_LEVEL=25
 RUN yes | sdkmanager --verbose --sdk_root=$ANDROID_HOME --licenses
-RUN yes | sdkmanager --verbose --sdk_root=$ANDROID_HOME "build-tools;${ANDROID_API_LEVEL}.0.0"
-RUN yes | sdkmanager --verbose --sdk_root=$ANDROID_HOME "system-images;android-${ANDROID_API_LEVEL};default;x86"
-RUN yes | sdkmanager --verbose --sdk_root=$ANDROID_HOME "platforms;android-${ANDROID_API_LEVEL}"
-RUN yes | sdkmanager --verbose --sdk_root=$ANDROID_HOME "emulator"
-RUN yes | sdkmanager --verbose --sdk_root=$ANDROID_HOME "platform-tools"
+# Conditionally install packages based on API level
+RUN if [ "$ANDROID_API_LEVEL" = "34" ]; then \
+      yes | sdkmanager --verbose --sdk_root=$ANDROID_HOME \
+        "build-tools;34.0.0" \
+        "platforms;android-34" \
+        "system-images;android-34;google_apis;x86_64"; \
+    else \
+      yes | sdkmanager --verbose --sdk_root=$ANDROID_HOME \
+        "build-tools;${ANDROID_API_LEVEL}.0.0" \
+        "platforms;android-${ANDROID_API_LEVEL}" \
+        "system-images;android-${ANDROID_API_LEVEL};default;x86"; \
+    fi
+
+RUN yes | sdkmanager --verbose --sdk_root=$ANDROID_HOME "emulator" "platform-tools"
 
 # NOTE: create device
-RUN echo no | avdmanager -v create avd -f \
-  -n test_nexus \
-  -k "system-images;android-${ANDROID_API_LEVEL};default;x86" 
+RUN if [ "$ANDROID_API_LEVEL" = "34" ]; then \
+      echo no | avdmanager -v create avd -f \
+        -n Pixel_8 \
+        -k "system-images;android-34;google_apis;x86_64" \
+        --device "pixel_5" && \
+      echo "hw.lcd.width=1080" >> /root/.android/avd/Pixel_8.avd/config.ini && \
+      echo "hw.lcd.height=2400" >> /root/.android/avd/Pixel_8.avd/config.ini && \
+      echo "hw.lcd.density=428" >> /root/.android/avd/Pixel_8.avd/config.ini && \
+      echo "hw.ramSize=3072M" >> /root/.android/avd/Pixel_8.avd/config.ini && \
+      echo "hw.gpu.enabled=yes" >> /root/.android/avd/Pixel_8.avd/config.ini && \
+      echo "hw.gpu.mode=software" >> /root/.android/avd/Pixel_8.avd/config.ini; \
+    else \
+      echo no | avdmanager -v create avd -f \
+        -n test_nexus \
+        -k "system-images;android-${ANDROID_API_LEVEL};default;x86"; \
+    fi
+
+RUN for f in /root/.android/avd/*.avd/config.ini; do \
+      echo "hw.keyboard=yes" >> "$f" && \
+      sed -i 's/hw.keyboard=no/hw.keyboard=yes/g' "$f" && \
+      sed -i 's/hw.keyboard = no/hw.keyboard = yes/g' "$f"; \
+    done
 
 # # apksigner.jar
-ENV PATH $PATH:$ANDROID_HOME/build-tools/${ANDROID_API_LEVEL}.0.0/lib
+ENV PATH=$PATH:$ANDROID_HOME/build-tools/${ANDROID_API_LEVEL}.0.0/lib
 
 # ADD ./etc/supervisord-emulator.conf /etc/supervisord-emulator.conf
 ADD ./etc/launch_emulator.sh /etc/launch_emulator.sh
