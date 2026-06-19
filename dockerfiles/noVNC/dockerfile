@@ -4,7 +4,7 @@ ENV NOVNC_VERSION="1.7.0" \
     WEBSOCKIFY_VERSION="0.13.0" \
     OPT_PATH="/opt"
 
-RUN apt install -y wget unzip openssl
+RUN apt update && apt install -y wget unzip openssl
 
 RUN wget -nv -O noVNC.zip "https://github.com/novnc/noVNC/archive/refs/tags/v${NOVNC_VERSION}.zip" 
 RUN unzip -x noVNC.zip 
@@ -16,6 +16,7 @@ RUN unzip -x websockify.zip
 RUN mv websockify-${WEBSOCKIFY_VERSION} ${OPT_PATH}/noVNC/utils/websockify 
 RUN rm websockify.zip 
 RUN ln -sf ${OPT_PATH}/noVNC/vnc.html ${OPT_PATH}/noVNC/index.html
+
 RUN openssl req -new -x509 -days 3650 -nodes -out ${OPT_PATH}/noVNC/self.pem -keyout ${OPT_PATH}/noVNC/self.pem -subj "/C=US/ST=State/L=City/O=Organization/CN=localhost"
 
 ENV DISPLAY=:0 \

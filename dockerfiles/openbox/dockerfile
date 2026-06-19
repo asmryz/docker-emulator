@@ -9,13 +9,14 @@ ENV PS1='# '
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PASSWORD="root"
 
-RUN apt install -y \
+RUN apt update && apt install -y \
   supervisor \
   openbox tint2 \
-  pcmanfm xfce4-terminal procps curl telnet iproute2 
+  pcmanfm xfce4-terminal procps curl telnet iproute2 \
+  x11-xserver-utils \
+  tigervnc-standalone-server
 
 # NOTE: vnc setup start
-RUN apt install -qy tigervnc-standalone-server
 RUN mkdir /root/.vnc
 RUN echo 123456 | vncpasswd -f > /root/.vnc/passwd
 RUN chmod 600 /root/.vnc/passwd
@@ -23,6 +24,26 @@ RUN chmod 600 /root/.vnc/passwd
 
 ADD etc/xdg/pcmanfm /root/.config/pcmanfm
 ADD etc /etc
+
+# Override Onyx theme to make right-click context menu white with black text and blue #0096FF highlights
+RUN echo "" >> /usr/share/themes/Onyx/openbox-3/themerc && \
+    echo "menu.border.color: #CCCCCC" >> /usr/share/themes/Onyx/openbox-3/themerc && \
+    echo "menu.title.bg: flat" >> /usr/share/themes/Onyx/openbox-3/themerc && \
+    echo "menu.title.bg.color: #FFFFFF" >> /usr/share/themes/Onyx/openbox-3/themerc && \
+    echo "menu.title.text.color: #000000" >> /usr/share/themes/Onyx/openbox-3/themerc && \
+    echo "menu.items.bg: flat" >> /usr/share/themes/Onyx/openbox-3/themerc && \
+    echo "menu.items.bg.color: #FFFFFF" >> /usr/share/themes/Onyx/openbox-3/themerc && \
+    echo "menu.items.text.color: #000000" >> /usr/share/themes/Onyx/openbox-3/themerc && \
+    echo "menu.items.disabled.text.color: #888888" >> /usr/share/themes/Onyx/openbox-3/themerc && \
+    echo "menu.items.active.bg: flat" >> /usr/share/themes/Onyx/openbox-3/themerc && \
+    echo "menu.items.active.bg.color: #0096FF" >> /usr/share/themes/Onyx/openbox-3/themerc && \
+    echo "menu.items.active.text.color: #FFFFFF" >> /usr/share/themes/Onyx/openbox-3/themerc && \
+    echo "menu.separator.color: #CCCCCC" >> /usr/share/themes/Onyx/openbox-3/themerc
+
+# Create system-wide openbox autostart script to set desktop color to #0096FF
+RUN mkdir -p /etc/xdg/openbox && \
+    echo "xsetroot -solid '#0096FF' &" > /etc/xdg/openbox/autostart && \
+    chmod +x /etc/xdg/openbox/autostart
 
 # # original openbox docker ends here
 

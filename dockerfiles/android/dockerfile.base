@@ -8,7 +8,7 @@ ENV ANDROID_API_LEVEL=${ANDROID_API_LEVEL}
 # pre-request
 # openjdk-17-jdk \
 
-RUN apt install -y git curl wget zip unzip nano net-tools \
+RUN apt update && apt install -y git curl wget zip unzip nano net-tools \
     openjdk-17-jdk \
     qemu-system-x86 --fix-missing
 
