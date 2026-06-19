@@ -24,6 +24,21 @@ RUN chmod 600 /root/.vnc/passwd
 ADD etc/xdg/pcmanfm /root/.config/pcmanfm
 ADD etc /etc
 
+# NOTE: Customize Onyx theme to make the menu white
+RUN mkdir -p /usr/share/themes/Onyx/openbox-3 && \
+    touch /usr/share/themes/Onyx/openbox-3/themerc && \
+    echo 'menu.border.color: #ffffff\n\
+menu.title.bg: flat\n\
+menu.title.bg.color: #ffffff\n\
+menu.title.text.color: #000000\n\
+menu.items.bg: flat\n\
+menu.items.bg.color: #ffffff\n\
+menu.items.text.color: #000000\n\
+menu.items.active.bg: flat\n\
+menu.items.active.bg.color: #0096ff\n\
+menu.items.active.text.color: #ffffff\n\
+menu.separator.color: #e0e0e0' >> /usr/share/themes/Onyx/openbox-3/themerc
+
 # # original openbox docker ends here
 
 # launch line
